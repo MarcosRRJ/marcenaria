@@ -14,11 +14,11 @@ import br.com.umc.marcenaria.modelo.Documento;
 
 public class DocumentoDaoImpl implements DocumentoDao {
 
-	private Connection con = new ConexaoBancoDeDados().getConnection();
-
 	@Override
 	public void cadastrarDocumento(Documento documento, Pessoa pessoa) {
 		try {
+			Connection con = new ConexaoBancoDeDados().getConnection();
+
 			String sqlInsert = "INSERT INTO Documento(id_documento, numero, descricao, id_pessoa) VALUES(documento_seq.nextval, ?,?,?)";
 			PreparedStatement ps = con.prepareStatement(sqlInsert);
 			ps.setString(1, documento.getNumero());
@@ -38,6 +38,7 @@ public class DocumentoDaoImpl implements DocumentoDao {
 	public List<Documento> listarDocumentoPorPessoa(Pessoa pessoa) {
 
 		try {
+			Connection con = new ConexaoBancoDeDados().getConnection();
 			List<Documento> documentos = new ArrayList<>();
 
 			String sqlSelect = "SELECT * FROM Documento where id_pessoa = ?";
@@ -63,21 +64,34 @@ public class DocumentoDaoImpl implements DocumentoDao {
 	}
 
 	@Override
-	public void alterarDocumento(Documento documento) {
+	public void alterarDocumento(List<Documento> ListaDedocumentos, Pessoa pessoa) {
 
-		try {
-			String sqlUpdate = "UPDATE Documento SET numero =?, descricao=? WHERE id_documento = ?";
-			PreparedStatement ps = con.prepareStatement(sqlUpdate);
-			ps.setString(1, documento.getNumero());
-			ps.setString(2, documento.getDescricao());
-			ps.setInt(3, documento.getIdDocumento());
-			ps.executeUpdate();
+		int i = 0;
+		for (Documento documento : ListaDedocumentos) {
 
-			ps.close();
-			con.close();
+			if ((pessoa.getDocumentos().size() > 0)
+					&& (pessoa.getDocumentos().get(i).getDescricao().equals(documento.getDescricao()))) {
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+				try {
+					Connection con = new ConexaoBancoDeDados().getConnection();
+
+					String sqlUpdate = "UPDATE Documento SET numero =? WHERE id_pessoa = ? and descricao like ?";
+					PreparedStatement ps = con.prepareStatement(sqlUpdate);
+					ps.setString(1, documento.getNumero());
+					ps.setInt(2, documento.getIdPessoa());
+					ps.setString(3, documento.getDescricao());
+					ps.executeUpdate();
+
+					ps.close();
+					con.close();
+					i++;
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			} else {
+				cadastrarDocumento(documento, pessoa);
+
+			}
 		}
 
 	}
@@ -85,6 +99,8 @@ public class DocumentoDaoImpl implements DocumentoDao {
 	@Override
 	public void deleterDocumento(Documento documento) {
 		try {
+			Connection con = new ConexaoBancoDeDados().getConnection();
+
 			String sqlUpdate = "DELETE FROM Documento id_documento = ?";
 			PreparedStatement ps = con.prepareStatement(sqlUpdate);
 			ps.setInt(1, documento.getIdDocumento());

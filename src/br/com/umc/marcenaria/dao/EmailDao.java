@@ -7,7 +7,7 @@ import br.com.umc.marcenaria.modelo.Pessoa;
 
 public interface EmailDao {
 
-	void cadastrarEmail(Email email, Pessoa pessoa);
+	Email cadastrarEmail(Email email, Pessoa pessoa);
 
 	List<Email> listarEmailPorPessoa(Pessoa pessoa);
 
@@ -15,6 +15,6 @@ public interface EmailDao {
 
 	void alterarEmail(Email email);
 
-	void deleterEmail(Email email);
+	void deletarEmail(Email email);
 
 }

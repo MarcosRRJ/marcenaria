@@ -4,16 +4,17 @@ import java.util.List;
 
 import br.com.umc.marcenaria.modelo.Cliente;
 import br.com.umc.marcenaria.modelo.Perfil;
+import br.com.umc.marcenaria.modelo.Pessoa;
 
 public interface ClienteDao {
 
-	void cadastrarCliente(Cliente cliente, Perfil perfil);
+	Cliente cadastrarCliente(Cliente cliente, Perfil perfil, Pessoa pesssoa);
 
 	List<Cliente> listarTodosClientes();
 
-	Cliente listarUmCliente(String login);
+	Cliente listarUmCliente(Integer login);
 
-	void alterarCliente(Cliente cliente, Perfil perfil);
+	void alterarCliente(Cliente cliente);
 
 	void deleterCliente(String login);
 

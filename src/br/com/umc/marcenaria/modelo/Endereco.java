@@ -15,6 +15,19 @@ public class Endereco {
 	public Endereco() {
 	}
 
+	public Endereco(Integer idEndereco, String pais, String estado, String cidade, String bairro, String logadouro,
+			String cep, String complemento, Integer idPessoa) {
+		this.idEndereco = idEndereco;
+		this.pais = pais;
+		this.estado = estado;
+		this.cidade = cidade;
+		this.bairro = bairro;
+		this.logadouro = logadouro;
+		this.cep = cep;
+		this.complemento = complemento;
+		IdPessoa = idPessoa;
+	}
+
 	public Integer getIdEndereco() {
 		return idEndereco;
 	}
@@ -87,4 +100,11 @@ public class Endereco {
 		IdPessoa = idPessoa;
 	}
 
+	@Override
+	public String toString() {
+		return "Endereco [idEndereco=" + idEndereco + ", pais=" + pais + ", estado=" + estado + ", cidade=" + cidade
+				+ ", bairro=" + bairro + ", logadouro=" + logadouro + ", cep=" + cep + ", complemento=" + complemento
+				+ ", IdPessoa=" + IdPessoa + "]";
+	}
+	
 }

@@ -4,11 +4,11 @@ import br.com.umc.marcenaria.modelo.Pessoa;
 
 public interface PessoaDao {
 
-	void cadastrarPessoa(Pessoa pessoa);
+	Integer cadastrarPessoa(Pessoa pessoa);
 
 //	List<Pessoa> listarTodasPessoas();
 
-//	Pessoa pegarUmaPessoa(String login);
+	Pessoa pegarUmaPessoa(Integer id);
 
 	void alterarPessoa(Pessoa pessoa);
 

@@ -14,12 +14,12 @@ import br.com.umc.marcenaria.modelo.Telefone;
 
 public class TelefoneDaoImpl implements TelefoneDao {
 
-	private Connection con = new ConexaoBancoDeDados().getConnection();
-
 	@Override
 	public void cadastrarTelefone(Telefone telefone, Pessoa pessoa) {
 		try {
-			String sqlInsert = "INSERT INTO Telefone(id_telefone, numero, descricao, id_pessoa) VALUES(teledone_seq.nextval, ?,?,?)";
+			Connection con = new ConexaoBancoDeDados().getConnection();
+
+			String sqlInsert = "INSERT INTO Telefone(id_telefone, numero, descricao, id_pessoa) VALUES(telefone_seq.nextval, ?,?,?)";
 			PreparedStatement ps = con.prepareStatement(sqlInsert);
 			ps.setString(1, telefone.getNumero());
 			ps.setString(2, telefone.getDescricao());
@@ -38,6 +38,8 @@ public class TelefoneDaoImpl implements TelefoneDao {
 	public List<Telefone> listarTelefonePorPessoa(Pessoa pessoa) {
 
 		try {
+			Connection con = new ConexaoBancoDeDados().getConnection();
+
 			List<Telefone> telefones = new ArrayList<>();
 
 			String sqlSelect = "SELECT * FROM Telefone where id_pessoa = ?";
@@ -51,10 +53,12 @@ public class TelefoneDaoImpl implements TelefoneDao {
 				telefone.setIdTelefone(rs.getInt("id_telefone"));
 				telefone.setNumero(rs.getString("numero"));
 				telefone.setDescricao(rs.getString("descricao"));
-				telefone.setIdPessoa(pessoa.getId());
+				telefone.setIdPessoa(rs.getInt("id_pessoa"));
 
 				telefones.add(telefone);
 			}
+			ps.close();
+			con.close();
 			return telefones;
 
 		} catch (SQLException e) {
@@ -63,31 +67,43 @@ public class TelefoneDaoImpl implements TelefoneDao {
 	}
 
 	@Override
-	public void alterarTelefone(Telefone telefone) {
+	public void alterarTelefone(List<Telefone> listTelefones, Pessoa pessoa) {
 
-		try {
-			String sqlUpdate = "UPDATE Telefone SET numero =?, descricao=? WHERE id_telefone = ?";
-			PreparedStatement ps = con.prepareStatement(sqlUpdate);
-			ps.setString(1, telefone.getNumero());
-			ps.setString(2, telefone.getDescricao());
-			ps.setInt(3, telefone.getIdTelefone());
-			ps.executeUpdate();
+		int i = 0;
+		for (Telefone telefone : listTelefones) {
+			if ((pessoa.getTelefones().size() > 0)
+					|| (pessoa.getTelefones().get(i).getDescricao().equals(telefone.getDescricao()))) {
 
-			ps.close();
-			con.close();
+				try {
+					Connection con = new ConexaoBancoDeDados().getConnection();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+					String sqlUpdate = "UPDATE Telefone SET numero =? WHERE id_telefone = ?";
+					PreparedStatement ps = con.prepareStatement(sqlUpdate);
+					ps.setString(1, telefone.getNumero());
+					ps.setInt(2, pessoa.getTelefones().get(i).getIdTelefone());
+					ps.executeUpdate();
+
+					ps.close();
+					con.close();
+					i++;
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+
+			} else {
+				cadastrarTelefone(telefone, pessoa);
+			}
 		}
-
 	}
 
 	@Override
 	public void deleterTelefone(Telefone telefone) {
 		try {
-			String sqlUpdate = "DELETE FROM Telefone id_telefone = ?";
+			Connection con = new ConexaoBancoDeDados().getConnection();
+
+			String sqlUpdate = "DELETE FROM Telefone where numero like ?";
 			PreparedStatement ps = con.prepareStatement(sqlUpdate);
-			ps.setInt(1, telefone.getIdTelefone());
+			ps.setString(1, telefone.getNumero());
 			ps.executeUpdate();
 
 			ps.close();

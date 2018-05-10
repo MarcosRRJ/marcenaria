@@ -6,6 +6,15 @@ public class Email {
 	private String email;
 	private Integer idPessoa;
 
+	public Email() {
+	}
+
+	public Email(Integer idEmail, String email, Integer idPessoa) {
+		this.idEmail = idEmail;
+		this.email = email;
+		this.idPessoa = idPessoa;
+	}
+
 	public Integer getIdEmail() {
 		return idEmail;
 	}

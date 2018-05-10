@@ -9,11 +9,12 @@ public class Pessoa {
 	private Integer id;
 	private String nome;
 	private Date dataNasc;
-	private String status;
-	private List<Endereco> enderecos = new ArrayList<>();
+	private Endereco endereco;
 	private List<Documento> documentos = new ArrayList<>();
 	private List<Email> emails = new ArrayList<>();
 	private List<Telefone> telefones = new ArrayList<>();
+	private Cliente cliente;
+	private Funcionario funcionario;
 
 	public Pessoa() {
 	}
@@ -42,20 +43,12 @@ public class Pessoa {
 		this.dataNasc = dataNasc;
 	}
 
-	public List<Endereco> getEnderecos() {
-		return enderecos;
+	public Endereco getEndereco() {
+		return endereco;
 	}
 
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public void setEnderecos(List<Endereco> enderecos) {
-		this.enderecos = enderecos;
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
 	}
 
 	public List<Documento> getDocumentos() {
@@ -80,6 +73,29 @@ public class Pessoa {
 
 	public void setTelefones(List<Telefone> telefones) {
 		this.telefones = telefones;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public Funcionario getFuncionario() {
+		return funcionario;
+	}
+
+	public void setFuncionario(Funcionario funcionario) {
+		this.funcionario = funcionario;
+	}
+
+	@Override
+	public String toString() {
+		return "Pessoa [id=" + id + ", nome=" + nome + ", dataNasc=" + dataNasc + ", endereco=" + endereco
+				+ ", documentos=" + documentos + ", emails=" + emails + ", telefones=" + telefones + ", cliente="
+				+ cliente + ", funcionario=" + funcionario + "]";
 	}
 
 }

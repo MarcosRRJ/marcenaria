@@ -13,7 +13,7 @@ public interface DocumentoDao {
 
 	Documento pegarUmDocumento(String login);
 
-	void alterarDocumento(Documento documento);
+	void alterarDocumento(List<Documento> documentos, Pessoa pessoa);
 
 	void deleterDocumento(Documento documento);
 

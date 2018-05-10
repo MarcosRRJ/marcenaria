@@ -11,37 +11,51 @@ import java.util.List;
 import br.com.umc.marcenaria.config.ConexaoBancoDeDados;
 import br.com.umc.marcenaria.dao.PessoaDao;
 import br.com.umc.marcenaria.modelo.Pessoa;
-import br.com.umc.marcenaria.modelo.Perfil;
 
 public class PessoaDaoImpl implements PessoaDao {
 
-	private Connection con = new ConexaoBancoDeDados().getConnection();
-
 	@Override
-	public void cadastrarPessoa(Pessoa pessoa) {
-
+	public Integer cadastrarPessoa(Pessoa pessoa) {
+		Integer id = null;
+		String generatedColumns[] = { "ID" };
 		try {
-			String sqlInsert = "INSERT INTO Pessoa(id_pessoa, nome, dataCadastro, status) VALUES(pessoa_seq.nextval, ?,?,'A')";
-			PreparedStatement ps = con.prepareStatement(sqlInsert);
-			ps.setString(1, pessoa.getNome());
-			ps.setDate(2, new Date(System.currentTimeMillis()));
-			ps.execute();
+			Connection con = new ConexaoBancoDeDados().getConnection();
 			
+			String sqlInsert = "INSERT INTO Pessoa(id, nome, dataNasc) VALUES(pessoa_seq.nextval, ?,?)";
+			PreparedStatement ps = con.prepareStatement(sqlInsert, generatedColumns);
+			ps.setString(1, pessoa.getNome());
+			ps.setDate(2,new Date(pessoa.getDataNasc().getTime()));
+			ps.execute();
+
+			try (ResultSet rs = ps.getGeneratedKeys()) {
+				
+			
+				
+				if (rs.next()) {
+				System.out.println(rs.getInt(1));
+				id = rs.getInt(1);
+
+				}
+
+			}
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		return id;
 	}
 
 //	@Override
 //	public List<Pessoa> listarTodasPessoas() {
 //
 //		try {
+//			Connection con = new ConexaoBancoDeDados().getConnection();
+//			
 //			List<Pessoa> pessoas = new ArrayList<>();
 //
 //			String sqlSelect = "SELECT * FROM Pessoa";
-//			PreparedStatement ps = con.prepareStatement(sqlSelect);			
+//			PreparedStatement ps = con.prepareStatement(sqlSelect);
 //			ResultSet rs = ps.executeQuery();
 //
 //			while (rs.next()) {
@@ -61,44 +75,44 @@ public class PessoaDaoImpl implements PessoaDao {
 //		}
 //	}
 
-//	@Override
-//	public Pessoa pegarUmaPessoa(String login) {
-//		try {
-//			Pessoa pessoa = new Pessoa();
-//
-//			String sqlSelect = "SELECT * FROM CLIENTE WHERE LOGIN like ?";
-//			PreparedStatement ps = con.prepareStatement(sqlSelect);
-//			ps.setString(1, "%"+login+"%");
-//			
-//			ResultSet rs = ps.executeQuery();
-//
-//			while (rs.next()) {
-//				
-//				pessoa.setIdPessoa(rs.getInt("idPessoa"));
-//				pessoa.setNome(rs.getString("nome"));
-//				pessoa.setDataNasc(rs.getDate("dataCadastro"));
-//				pessoa.setLogin(rs.getString("login"));
-//				pessoa.setSenha(rs.getString("senha"));
-//				pessoa.setPerfil(rs.getInt("perfil"));
-//				System.out.println(pessoa);
-//			}
-//
-//			ps.close();
-//			return pessoa;
-//		} catch (SQLException e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
+	@Override
+	public Pessoa pegarUmaPessoa(Integer id) {
+		try {
+			Connection con = new ConexaoBancoDeDados().getConnection();
+			Pessoa pessoa = new Pessoa();
+
+			String sqlSelect = "SELECT * FROM pessoa WHERE id = ?";
+			PreparedStatement ps = con.prepareStatement(sqlSelect);
+			ps.setInt(1, id);
+
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				pessoa.setId(rs.getInt("id"));
+				pessoa.setNome(rs.getString("nome"));
+				pessoa.setDataNasc(rs.getDate("dataNasc"));
+			}
+
+			ps.close();
+			return pessoa;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Override
 	public void alterarPessoa(Pessoa pessoa) {
-		
+
 		try {
-			String sqlUpdate = "UPDATE Pessoa SET nome =? WHERE id_pessoa =?";
+			Connection con = new ConexaoBancoDeDados().getConnection();
+			
+			String sqlUpdate = "UPDATE Pessoa SET nome =? WHERE id =?";
 			PreparedStatement ps = con.prepareStatement(sqlUpdate);
 			ps.setString(1, pessoa.getNome());
+			ps.setInt(2, pessoa.getId());
 			ps.executeUpdate();
-			
+
 			ps.close();
 			con.close();
 
@@ -108,16 +122,17 @@ public class PessoaDaoImpl implements PessoaDao {
 
 	}
 
-
 	@Override
 	public void deleterPessoa(Pessoa pessoa) {
-		
+
 		try {
+			Connection con = new ConexaoBancoDeDados().getConnection();
+			
 			String sqlInsert = "UPDATE CLIENTE set status = 'D' where nome LIKE ?  ";
 			PreparedStatement ps = con.prepareStatement(sqlInsert);
 			ps.setString(1, pessoa.getNome());
 			ps.executeUpdate();
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

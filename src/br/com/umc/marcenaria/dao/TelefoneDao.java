@@ -11,7 +11,7 @@ public interface TelefoneDao {
 
 	List<Telefone> listarTelefonePorPessoa(Pessoa pessoa);
 
-	void alterarTelefone(Telefone telefone);
+	void alterarTelefone(List<Telefone> listTelefones, Pessoa pessoa);
 
 	void deleterTelefone(Telefone idTelefone);
 

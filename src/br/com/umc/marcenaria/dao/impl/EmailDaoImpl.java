@@ -14,11 +14,11 @@ import br.com.umc.marcenaria.modelo.Email;
 
 public class EmailDaoImpl implements EmailDao {
 
-	private Connection con = new ConexaoBancoDeDados().getConnection();
-
 	@Override
-	public void cadastrarEmail(Email email, Pessoa pessoa) {
+	public Email cadastrarEmail(Email email, Pessoa pessoa) {
 		try {
+			Connection con = new ConexaoBancoDeDados().getConnection();
+			
 			String sqlInsert = "INSERT INTO Email(id_email, email, id_pessoa) VALUES(email_seq.nextval, ?,?)";
 			PreparedStatement ps = con.prepareStatement(sqlInsert);
 			ps.setString(1, email.getEmail());
@@ -26,10 +26,10 @@ public class EmailDaoImpl implements EmailDao {
 
 			ps.execute();
 			con.close();
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return email;
 
 	}
 
@@ -37,6 +37,8 @@ public class EmailDaoImpl implements EmailDao {
 	public List<Email> listarEmailPorPessoa(Pessoa pessoa) {
 
 		try {
+			Connection con = new ConexaoBancoDeDados().getConnection();
+			
 			List<Email> emails = new ArrayList<>();
 
 			String sqlSelect = "SELECT * FROM Email where id_pessoa = ?";
@@ -64,10 +66,12 @@ public class EmailDaoImpl implements EmailDao {
 	public void alterarEmail(Email email) {
 
 		try {
-			String sqlUpdate = "UPDATE Email SET email =? WHERE id_email = ?";
+			Connection con = new ConexaoBancoDeDados().getConnection();
+			
+			String sqlUpdate = "UPDATE Email SET email =? WHERE id_pessoa = ?";
 			PreparedStatement ps = con.prepareStatement(sqlUpdate);
 			ps.setString(1, email.getEmail());
-			ps.setInt(2, email.getIdEmail());
+			ps.setInt(2, email.getIdPessoa());
 			ps.executeUpdate();
 
 			ps.close();
@@ -80,11 +84,13 @@ public class EmailDaoImpl implements EmailDao {
 	}
 
 	@Override
-	public void deleterEmail(Email email) {
+	public void deletarEmail(Email email) {
 		try {
-			String sqlUpdate = "DELETE FROM Email id_email = ?";
+			Connection con = new ConexaoBancoDeDados().getConnection();
+			
+			String sqlUpdate = "DELETE FROM Email where email like ?";
 			PreparedStatement ps = con.prepareStatement(sqlUpdate);
-			ps.setInt(1, email.getIdEmail());
+			ps.setString(1, email.getEmail());
 			ps.executeUpdate();
 
 			ps.close();

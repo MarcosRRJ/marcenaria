@@ -14,13 +14,13 @@ import br.com.umc.marcenaria.modelo.Endereco;
 
 public class EnderecoDaoImpl implements EnderecoDao {
 
-	private Connection con = new ConexaoBancoDeDados().getConnection();
-
 	@Override
 	public void cadastrarEndereco(Endereco endereco, Pessoa pessoa) {
 		try {
-			String sqlInsert = "INSERT INTO Endereco(id_endereco, pais, estado, cidade, bairro, logarouro, cep, complemento, id_pessoa) "
-					+ " VALUES(teledone_seq.nextval, ?,?,?,?,?,?,?,?)";
+			Connection con = new ConexaoBancoDeDados().getConnection();
+			
+			String sqlInsert = "INSERT INTO Endereco(id_endereco, pais, estado, cidade, bairro, logradouro, cep, complemento, id_pessoa) "
+					+ " VALUES(endereco_seq.nextval, ?,?,?,?,?,?,?,?)";
 			PreparedStatement ps = con.prepareStatement(sqlInsert);
 			ps.setString(1, endereco.getPais());
 			ps.setString(2, endereco.getEstado());
@@ -41,10 +41,12 @@ public class EnderecoDaoImpl implements EnderecoDao {
 	}
 
 	@Override
-	public List<Endereco> listarEnderecoPorPessoa(Pessoa pessoa) {
+	public Endereco listarEnderecoPorPessoa(Pessoa pessoa) {
 
 		try {
-			List<Endereco> enderecos = new ArrayList<>();
+			Connection con = new ConexaoBancoDeDados().getConnection();
+			
+			Endereco endereco = new Endereco();
 
 			String sqlSelect = "SELECT * FROM Endereco where id_pessoa = ?";
 			PreparedStatement ps = con.prepareStatement(sqlSelect);
@@ -53,20 +55,18 @@ public class EnderecoDaoImpl implements EnderecoDao {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				Endereco endereco = new Endereco();
 				endereco.setIdEndereco(rs.getInt("id_endereco"));
 				endereco.setPais(rs.getString("pais"));
 				endereco.setEstado(rs.getString("estado"));
 				endereco.setCidade(rs.getString("cidade"));
 				endereco.setBairro(rs.getString("bairro"));
-				endereco.setLogadouro(rs.getString("logarouro"));
+				endereco.setLogadouro(rs.getString("logradouro"));
 				endereco.setCep(rs.getString("cep"));
 				endereco.setComplemento(rs.getString("complemento"));
 				endereco.setIdPessoa(pessoa.getId());
 
-				enderecos.add(endereco);
 			}
-			return enderecos;
+			return endereco;
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -77,8 +77,9 @@ public class EnderecoDaoImpl implements EnderecoDao {
 	public void alterarEndereco(Endereco endereco) {
 
 		try {
-
-			String sqlUpdate = "UPDATE Endereco SET pais =?, estado=?, cidade=?, bairro=?, logadouro=?, cep=? complemento=? WHERE id_endereco = ?";
+			Connection con = new ConexaoBancoDeDados().getConnection();
+			
+			String sqlUpdate = "UPDATE Endereco SET pais =?, estado=?, cidade=?, bairro=?, logradouro=?, cep=?, complemento=? WHERE id_pessoa = ?";
 
 			PreparedStatement ps = con.prepareStatement(sqlUpdate);
 			ps.setString(1, endereco.getPais());
@@ -88,7 +89,7 @@ public class EnderecoDaoImpl implements EnderecoDao {
 			ps.setString(5, endereco.getLogadouro());
 			ps.setString(6, endereco.getCep());
 			ps.setString(7, endereco.getComplemento());
-			ps.setInt(8, endereco.getIdEndereco());
+			ps.setInt(8, endereco.getIdPessoa());
 			ps.executeUpdate();
 
 			ps.close();
@@ -103,6 +104,8 @@ public class EnderecoDaoImpl implements EnderecoDao {
 	@Override
 	public void deleterEndereco(Endereco endereco) {
 		try {
+			Connection con = new ConexaoBancoDeDados().getConnection();
+			
 			String sqlUpdate = "DELETE FROM Endereco id_endereco = ?";
 			PreparedStatement ps = con.prepareStatement(sqlUpdate);
 			ps.setInt(1, endereco.getIdEndereco());
@@ -118,9 +121,38 @@ public class EnderecoDaoImpl implements EnderecoDao {
 	}
 
 	@Override
-	public Endereco listarUmEndereco(String login) {
-		// TODO Auto-generated method stub
-		return null;
+	public Endereco listarUmEndereco(Pessoa pessoa) {
+
+		try {
+			Connection con = new ConexaoBancoDeDados().getConnection();
+			
+			Endereco endereco = new Endereco();
+
+			String sqlSelect = "SELECT * FROM Endereco where id_pessoa = ?";
+			PreparedStatement ps = con.prepareStatement(sqlSelect);
+			ps.setInt(1, pessoa.getId());
+
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+			
+				endereco.setIdEndereco(rs.getInt("id_endereco"));
+				endereco.setPais(rs.getString("pais"));
+				endereco.setEstado(rs.getString("estado"));
+				endereco.setCidade(rs.getString("cidade"));
+				endereco.setBairro(rs.getString("bairro"));
+				endereco.setLogadouro(rs.getString("logarouro"));
+				endereco.setCep(rs.getString("cep"));
+				endereco.setComplemento(rs.getString("complemento"));
+				endereco.setIdPessoa(pessoa.getId());
+
+			}
+			return endereco;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
+
 
 }

@@ -5,10 +5,21 @@ public class Telefone {
 	private Integer idTelefone;
 	private String numero;
 	private String descricao;
-	private Integer IdPessoa;
+	private Integer idPessoa;
 
 	public Telefone() {
 	}
+	
+	
+
+	public Telefone(Integer idTelefone, String numero, String descricao, Integer idPessoa) {
+		this.idTelefone = idTelefone;
+		this.numero = numero;
+		this.descricao = descricao;
+		this.idPessoa = idPessoa;
+	}
+
+
 
 	public Integer getIdTelefone() {
 		return idTelefone;
@@ -35,11 +46,17 @@ public class Telefone {
 	}
 
 	public Integer getIdPessoa() {
-		return IdPessoa;
+		return idPessoa;
 	}
 
 	public void setIdPessoa(Integer idPessoa) {
-		IdPessoa = idPessoa;
+		this.idPessoa = idPessoa;
+	}
+
+	@Override
+	public String toString() {
+		return "Telefone [idTelefone=" + idTelefone + ", numero=" + numero + ", descricao=" + descricao + ", IdPessoa="
+				+ idPessoa + "]";
 	}
 
 }

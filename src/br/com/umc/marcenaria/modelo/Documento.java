@@ -11,6 +11,13 @@ public class Documento {
 
 	}
 
+	public Documento(Integer idDocumento, String numero, String descricao, Integer idPessoa) {
+		this.idDocumento = idDocumento;
+		this.numero = numero;
+		this.descricao = descricao;
+		IdPessoa = idPessoa;
+	}
+
 	public Integer getIdDocumento() {
 		return idDocumento;
 	}
