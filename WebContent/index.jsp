@@ -33,7 +33,7 @@
 						<td><a href="cliente">Listar Clientes</a></td>
 					</tr>
 					<tr>
-						<td><a href="departamento?acao=cadastrar">Cadastrar Funcionario</a></td>
+						<td><a href="funcionario?acao=cadastrar">Cadastrar Funcionario</a></td>
 						<td><a href="funcionario">Listar Funcionarios</a></td>
 					</tr>
 				</tbody>	

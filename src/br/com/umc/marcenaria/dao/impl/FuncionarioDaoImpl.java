@@ -126,10 +126,11 @@ public class FuncionarioDaoImpl implements FuncionarioDao {
 
 		try {
 			Connection con = new ConexaoBancoDeDados().getConnection();
-			String sqlUpdate = "UPDATE Funcionario SET login =? WHERE id_pessoa =?";
+			String sqlUpdate = "UPDATE Funcionario SET login =?, id_departamento = ? WHERE id_pessoa =?";
 			PreparedStatement ps = con.prepareStatement(sqlUpdate);
 			ps.setString(1, funcionario.getLogin());
 			ps.setInt(2, funcionario.getPessoa());
+			ps.setInt(3, funcionario.getDepartamento().getIdDepartamento());
 			ps.executeUpdate();
 
 			ps.close();

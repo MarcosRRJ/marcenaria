@@ -15,9 +15,12 @@ import javax.servlet.http.HttpSession;
 
 import br.com.umc.marcenaria.dao.FuncionarioDao;
 import br.com.umc.marcenaria.dao.impl.FuncionarioDaoImpl;
+import br.com.umc.marcenaria.modelo.Departamento;
 import br.com.umc.marcenaria.modelo.Funcionario;
 import br.com.umc.marcenaria.modelo.Perfil;
 import br.com.umc.marcenaria.modelo.Pessoa;
+import br.com.umc.marcenaria.util.ValidaForm;
+import br.com.umc.marcenaria.util.ValidaFormImpl;
 
 @WebServlet(urlPatterns = "/funcionario")
 public class FuncionarioControle extends HttpServlet {
@@ -69,7 +72,7 @@ public class FuncionarioControle extends HttpServlet {
 				documentoControle.doGet(req, resp);
 				enderecoControle.doGet(req, resp);
 				departamentoControlle.doGet(req, resp);
-				
+
 				pessoa.setFuncionario(funcionario);
 
 				System.out.println(pessoa);
@@ -78,10 +81,18 @@ public class FuncionarioControle extends HttpServlet {
 				RequestDispatcher rd = req.getRequestDispatcher("formAlterarFunc.jsp");
 				rd.forward(req, resp);
 			}
+
+			if (acao.equals("cadastrar")) {
+
+				departamentoControlle.doGet(req, resp);
+				RequestDispatcher rd = req.getRequestDispatcher("formCadastroFuncionario.jsp");
+				rd.forward(req, resp);
+
+			}
 			if (acao.equals("desativarFunc")) {
 				doDelete(req, resp);
 			}
-			
+
 		}
 	}
 
@@ -91,39 +102,50 @@ public class FuncionarioControle extends HttpServlet {
 		String acao = req.getParameter("acao");
 
 		if (acao == null) {
-
-			Pessoa pessoa = new Pessoa();
-
-			pessoa.setId(pessoaControlle.doPosts(req, resp));
-
-			telefoneControle.doPost(req, resp, pessoa);
-
-			emailControle.doPost(req, resp, pessoa);
-
-			enderecoControle.doPost(req, resp, pessoa);
-
-			documentoControle.doPost(req, resp, pessoa);
-
-			Perfil perfil = new Perfil();
-			perfil.setIdPerfil(2);
-
-			String senha = req.getParameter("senha");
-			String login = req.getParameter("email");
-			acao = "buscaDepart";
 			
-			HttpSession session = req.getSession();
-
-			Funcionario funcionario  = new Funcionario(null, login, senha, acao, null, new Date(),null, pessoa.getId(), perfil);
+			ValidaForm validaForm = new ValidaFormImpl();
 			
-			session.setAttribute("funcionario", funcionario);
-			
-			departamentoControlle.doGet(req, resp);
-			funcionario.setStatus("Ativo");
-			pessoa.setFuncionario(dao.cadastrarFuncionario(funcionario, perfil, pessoa, funcionario.getDepartamento()));
+			if (validaForm.validaForm(req, resp)) {
+				
+				req.setAttribute("errorString", "Todos os Campos são obrigatórios Campo Obrigatótio");
+				departamentoControlle.doGet(req, resp);
+				RequestDispatcher rd = req.getRequestDispatcher("formCadastroFuncionario.jsp");
+				rd.forward(req, resp);
 
-			// encaminha o request para o JSP
-			RequestDispatcher rd = req.getRequestDispatcher("index.jsp");
-			rd.forward(req, resp);
+			} else {
+				
+				Pessoa pessoa = new Pessoa();
+				pessoa.setId(pessoaControlle.doPosts(req, resp));
+
+				telefoneControle.doPost(req, resp, pessoa);
+
+				emailControle.doPost(req, resp, pessoa);
+
+				enderecoControle.doPost(req, resp, pessoa);
+
+				documentoControle.doPost(req, resp, pessoa);
+
+				Perfil perfil = new Perfil();
+				perfil.setIdPerfil(2);
+
+				String senha = req.getParameter("senha");
+				String login = req.getParameter("email");
+				acao = "buscaDepart";
+
+				Funcionario funcionario = new Funcionario(null, login, senha, acao, null, new Date(), null,
+						pessoa.getId(), perfil);
+
+				Integer idDepartamento = Integer.parseInt(req.getParameter("departamento"));
+
+				Departamento departamento = new Departamento();
+				departamento.setIdDepartamento(idDepartamento);
+
+				pessoa.setFuncionario(dao.cadastrarFuncionario(funcionario, perfil, pessoa, departamento));
+
+				// encaminha o request para o JSP
+				RequestDispatcher rdt = req.getRequestDispatcher("index.jsp");
+				rdt.forward(req, resp);
+			}
 
 		}
 		if (acao.equals("alterar")) {
@@ -134,42 +156,60 @@ public class FuncionarioControle extends HttpServlet {
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+
 		Pessoa pessoa = new Pessoa();
 		Integer id = Integer.parseInt(req.getParameter("id"));
 		pessoa.setId(id);
-		
+
 		pessoa = pessoaControlle.doPut(req, resp, pessoa);
-		
+
 		HttpSession session = req.getSession();
 		session.setAttribute("pessoa", pessoa);
 
 		telefoneControle.doGet(req, resp);
 		telefoneControle.doPut(req, resp);
-		
+
 		documentoControle.doGet(req, resp);
 		documentoControle.doPut(req, resp);
-		
+
 		emailControle.doPut(req, resp);
 		enderecoControle.doPut(req, resp);
-		
+
 		String login = req.getParameter("email");
-		Funcionario funcionario = new Funcionario(null, login, null, null, null, new Date(),null, pessoa.getId(), null);
+		Funcionario funcionario = new Funcionario(null, login, null, null, null, new Date(), null, pessoa.getId(),
+				null);
+
+		Integer idDepartamento = Integer.parseInt(req.getParameter("departamento"));
+
+		Departamento departamento = new Departamento();
+		departamento.setIdDepartamento(idDepartamento);
+
+		funcionario.setDepartamento(departamento);
 		dao.alterarFuncionario(funcionario);
-		
+
 		List<Funcionario> funcionarios = new ArrayList<>();
 		funcionarios.addAll(dao.listarTodosFuncionarios());
-		req.setAttribute("listaFuncionario", funcionarios);
+		req.setAttribute("listaFuncionarios", funcionarios);
 		RequestDispatcher rd = req.getRequestDispatcher("listaFuncionarios.jsp");
 		rd.forward(req, resp);
 	}
-	
+
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		Integer id = Integer.parseInt(req.getParameter("id"));
 		dao.deleterFuncionario(id);
-		
+
+		List<Funcionario> funcionarios = new ArrayList<>();
+
+		funcionarios.addAll(dao.listarTodosFuncionarios());
+
+		funcionarios.forEach(System.out::println);
+
+		req.setAttribute("listaFuncionarios", funcionarios);
+		RequestDispatcher rd = req.getRequestDispatcher("listaFuncionarios.jsp");
+		rd.forward(req, resp);
+
 	}
 
 }

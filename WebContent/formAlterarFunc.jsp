@@ -39,7 +39,7 @@
 		class="container col-md-5 col-md-offset-4 col-sm-offset-1 col-xs-offset-1">
 		<h1>Formulário de Alteração</h1>
 		<hr />
-		<form action="/marcenaria/cliente" method="POST" id="form1">
+		<form action="/marcenaria/funcionario" method="POST" id="form1">
 			<input required="required" type="hidden" name="acao" value="alterar"> <input required="required"="required="required""
 				type="hidden" name="id" value="${pessoa.id}">
 			<div class="form-group">
@@ -130,10 +130,10 @@
 				</div>
 				<div class="form-group col-md-6">
 					<label for="cidade">Departamento</label> 
-						<select class="form-control" name="numeroDeSerie" >
+						<select class="form-control" name="departamento" >
 							<option selected disabled>Selecione um Departamento</option>
 							<c:forEach var="item" items="${listaDepartamento}">
-							  <option value="${item.numeroDeSerie}">${item.descricao}</option>
+							  <option value="${item.idDepartamento}">${item.descricao}</option>
 							</c:forEach>
 						</select>
 				</div>
@@ -141,7 +141,7 @@
 			<div class="form-group">
 				<div
 					class="form-group col-md-12 col-md-offset-6 col-sm-offset-6 col-xs-offset-6">
-					<button type="submit" form="form1" value="Submit"
+					<button type="submit" name="acao" value="alterar" form="form1" 
 						class="btn btn-success">Enviar</button>
 				</div>
 			</div>

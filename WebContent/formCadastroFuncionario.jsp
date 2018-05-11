@@ -29,7 +29,6 @@
 <body>
 	<div
 		class="container col-md-5 col-md-offset-4 col-sm-offset-1 col-xs-offset-1">
-
 		<%
 			ArrayList<Departamento> listaDepartamento = (ArrayList<Departamento>) request.getAttribute("listaDepartamento");
 		%>
@@ -37,6 +36,7 @@
 		<h1>Formulário de Cadastro</h1>
 		<hr />
 		<form action="/marcenaria/funcionario" method="post" id="form1">
+		<p style="color: red;">${errorString}</p>
 			<div class="form-group">
 				<div class="form-group col-md-12">
 					<label for="nome">Nome Completo</label> <input type="text"
@@ -119,10 +119,10 @@
 			<div class="form-group">
 				<div class="form-group col-md-6">
 					<label for="cidade">Departamento</label> 
-						<select class="form-control" name="numeroDeSerie" >
+						<select class="form-control" name="departamento" >
 							<option selected disabled>Selecione um Departamento</option>
 							<c:forEach var="item" items="${listaDepartamento}">
-							  <option value="${item.numeroDeSerie}">${item.descricao}</option>
+							  <option value="${item.idDepartamento}">${item.descricao}</option>
 							</c:forEach>
 						</select>
 				</div>

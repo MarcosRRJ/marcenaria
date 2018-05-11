@@ -49,33 +49,24 @@
 
 			</thead>
 			<tbody>
-				<%
-					if (listaCliente != null) {
-						for (Cliente c : listaCliente) {
-				%>
-				<tr id="linhas">
-					<td><%=c.getIdCliente()%></td>
-					<td><%=c.getLogin()%></td>
-					<%--  <td><%= c.getTelefone() %></td>
-                    <td><%= c.getEndereco() %></td> --%>
-					<%-- <td><a href="ControleCliente?acao=excluir&id=<%= c.getIdCliente() %>"><img src="src/img/excluir.png" alt=""/></a><a href="ControleCliente?acao=alterar&id=<%= c.getIdCliente() %>"><img src="src/img/editar.png" alt=""/></a></td> --%>
-					<td><a href="cliente?acao=buscarCli&id=<%=c.getPessoa()%>"><button
-								type="button" title="Editar" id="myBtn" class="btn btn-default">
-								<span class="glyphicon glyphicon-pencil" aria-hidden="true"
-									style="font-size: 13px;"> </span>
-							</button></a></td>
-					<td><a
-						href="cliente?acao=desativarCli&login=<%=c.getLogin()%>"><button
-								type="button" title="Desativar" id="myBtn"
-								class="btn btn-default">
-								<span class="glyphicon glyphicon-remove" aria-hidden="true"
-									style="font-size: 13px;"> </span>
-							</button></a></td>
-				</tr>
-				<%
-					}
-					}
-				%>
+				<c:forEach var="c" items="${listaCliente}">
+					<tr id="linhas">
+						<td>${c.idCliente}</td>
+						<td>${c.login}</td>
+						<td><a href="cliente?acao=buscarCli&id=${c.pessoa}"><button
+									type="button" title="Editar" id="myBtn" class="btn btn-default">
+									<span class="glyphicon glyphicon-pencil" aria-hidden="true"
+										style="font-size: 13px;"> </span>
+								</button></a></td>
+						<td><a
+							href="cliente?acao=desativarCli&login=${c.login}"><button
+									type="button" title="Desativar" id="myBtn"
+									class="btn btn-default">
+									<span class="glyphicon glyphicon-remove" aria-hidden="true"
+										style="font-size: 13px;"> </span>
+								</button></a></td>
+					</tr>
+				</c:forEach>
 			</tbody>
 		</table>
 	</div>

@@ -37,8 +37,8 @@
 		<h1>Formulário de Alteração</h1>
 		<hr />
 		<form action="/marcenaria/cliente" method="POST" id="form1">
-			<input type="hidden" name="acao" value="alterar"> <input
-				type="hidden" name="id" value="${pessoa.id}">
+			<input type="hidden" name="acao" value="alterar"> 
+			<input type="hidden" name="id" value="${pessoa.id}">
 			<div class="form-group">
 				<div class="form-group col-md-12">
 					<label for="nome">Nome Completo</label> <input type="text"

@@ -94,7 +94,6 @@ public class ClienteControle extends HttpServlet {
 
 			telefoneControle.doPost(req, resp, pessoa);
 
-
 			emailControle.doPost(req, resp, pessoa);
 
 			enderecoControle.doPost(req, resp, pessoa);
@@ -115,7 +114,7 @@ public class ClienteControle extends HttpServlet {
 			rd.forward(req, resp);
 
 		}
-		if (acao.equals("alterar")) {
+		if (acao != null && acao.equals("alterar")) {
 			doPut(req, resp);
 		}
 
@@ -123,42 +122,42 @@ public class ClienteControle extends HttpServlet {
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+
 		Pessoa pessoa = new Pessoa();
 		Integer id = Integer.parseInt(req.getParameter("id"));
 		pessoa.setId(id);
-		
+
 		pessoa = pessoaControlle.doPut(req, resp, pessoa);
-		
+
 		HttpSession session = req.getSession();
 		session.setAttribute("pessoa", pessoa);
 
 		telefoneControle.doGet(req, resp);
 		telefoneControle.doPut(req, resp);
-		
+
 		documentoControle.doGet(req, resp);
 		documentoControle.doPut(req, resp);
-		
+
 		emailControle.doPut(req, resp);
 		enderecoControle.doPut(req, resp);
-		
+
 		String login = req.getParameter("email");
 		Cliente cliente = new Cliente(null, login, null, null, null, pessoa.getId(), null);
 		dao.alterarCliente(cliente);
-		
+
 		List<Cliente> clientes = new ArrayList<>();
 		clientes.addAll(dao.listarTodosClientes());
 		req.setAttribute("listaCliente", clientes);
 		RequestDispatcher rd = req.getRequestDispatcher("listaClientes.jsp");
 		rd.forward(req, resp);
 	}
-	
+
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		String login = req.getParameter("login");
 		dao.deleterCliente(login);
-		
+
 	}
 
 }
