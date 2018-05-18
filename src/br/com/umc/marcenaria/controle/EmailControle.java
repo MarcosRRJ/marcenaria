@@ -1,6 +1,8 @@
 package br.com.umc.marcenaria.controle;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,7 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.com.umc.marcenaria.dao.EmailDao;
+import br.com.umc.marcenaria.dao.ImagemDao;
 import br.com.umc.marcenaria.dao.impl.EmailDaoImpl;
+import br.com.umc.marcenaria.dao.impl.ImagemDaoImpl;
 import br.com.umc.marcenaria.modelo.Pessoa;
 import br.com.umc.marcenaria.modelo.Email;
 
@@ -17,8 +21,9 @@ import br.com.umc.marcenaria.modelo.Email;
 public class EmailControle extends HttpServlet {
 
 	EmailDao dao = new EmailDaoImpl();
+	ImagemDao imagemDao = new ImagemDaoImpl();
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response, Pessoa pessoa)
+	public void doPost(HttpServletRequest request, HttpServletResponse response, Pessoa pessoa)
 			throws ServletException, IOException {
 
 		String emailPessoal = request.getParameter("email");
@@ -37,10 +42,25 @@ public class EmailControle extends HttpServlet {
 		Pessoa pessoa = new Pessoa();
 		pessoa.setId(1);
 		dao.listarEmailPorPessoa(pessoa).forEach(System.out::println);
+
+		PrintWriter out = response.getWriter();
+
+		Integer idProduto = Integer.parseInt(request.getParameter("idProduto"));
+		List<String> imgs = imagemDao.listarDocumentoPorPessoa(idProduto);
+
+		out.println("<html>");
+		out.println("<body>");
+		out.println("<h1>Arquivo gravado!</h1>");
+		for (String img : imgs) {
+			out.println("<img src='" + img + "' alt='Smiley face' width='42' height='42'>");
+		}
+		out.println("</body>");
+		out.println("</html>");
+
 	}
 
 	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		Pessoa pessoa = (Pessoa) req.getSession().getAttribute("pessoa");
 
@@ -56,7 +76,7 @@ public class EmailControle extends HttpServlet {
 	}
 
 	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		String email = req.getParameter("email");
 		Email obj = new Email(null, email, null);

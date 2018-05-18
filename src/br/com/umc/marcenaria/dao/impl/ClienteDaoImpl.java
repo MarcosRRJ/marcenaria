@@ -87,7 +87,7 @@ public class ClienteDaoImpl implements ClienteDao {
 	}
 
 	@Override
-	public Cliente listarUmCliente(Integer login) {
+	public Cliente listarUmCliente(Integer idPessoa) {
 		try {
 			Connection con = new ConexaoBancoDeDados().getConnection();
 			Cliente cliente = new Cliente();
@@ -95,7 +95,7 @@ public class ClienteDaoImpl implements ClienteDao {
 			String sqlSelect = "SELECT * FROM CLIENTE c, Perfil per WHERE c.id_pessoa = ? "
 							+ " and c.id_perfil = per.id_perfil ";
 			PreparedStatement ps = con.prepareStatement(sqlSelect);
-			ps.setInt(1, login);
+			ps.setInt(1, idPessoa);
 			
 			ResultSet rs = ps.executeQuery();
 
@@ -155,5 +155,40 @@ public class ClienteDaoImpl implements ClienteDao {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public Cliente efetuarLogin(String login, String senha) {
+		try {
+			Connection con = new ConexaoBancoDeDados().getConnection();
+			Cliente cliente = new Cliente();
+
+			String sqlSelect = "SELECT * FROM CLIENTE c, Perfil per WHERE c.login = ? "
+							+ " and c.senha = ? and c.id_perfil = per.id_perfil ";
+			PreparedStatement ps = con.prepareStatement(sqlSelect);
+			ps.setString(1, login);
+			ps.setString(2, senha);
+			
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				Perfil perfil = new Perfil();
+				cliente.setIdCliente(rs.getInt("id_cliente"));
+				cliente.setLogin(rs.getString("login"));
+				cliente.setSenha(rs.getString("senha"));
+				cliente.setDataCadastro(rs.getDate("data_cadastro"));
+				cliente.setStatus(rs.getString("status"));
+				cliente.setPessoa(rs.getInt("id_pessoa"));
+				perfil.setIdPerfil(rs.getInt("id_perfil"));
+				perfil.setDescricao(rs.getString("descricao"));
+				cliente.setPerfil(perfil);
+			}
+
+			ps.close();
+			con.close();
+			return cliente;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

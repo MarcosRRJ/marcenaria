@@ -12,10 +12,12 @@ public interface ClienteDao {
 
 	List<Cliente> listarTodosClientes();
 
-	Cliente listarUmCliente(Integer login);
+	Cliente listarUmCliente(Integer idPessoa);
 
 	void alterarCliente(Cliente cliente);
 
 	void deleterCliente(String login);
-
+	
+	Cliente efetuarLogin(String login, String senha);
+	
 }

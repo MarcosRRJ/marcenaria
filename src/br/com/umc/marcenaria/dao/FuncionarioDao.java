@@ -20,3 +20,4 @@ public interface FuncionarioDao {
 	void deleterFuncionario(Integer idFunc);
 
 }
+	

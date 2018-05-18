@@ -33,7 +33,7 @@ public class DocumentoControle extends HttpServlet {
 		session.setAttribute("pessoa", pessoa);
 	}
 
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp, Pessoa pessoa)
+	public void doPost(HttpServletRequest req, HttpServletResponse resp, Pessoa pessoa)
 			throws ServletException, IOException {
 
 		// cadastrar documento cpf

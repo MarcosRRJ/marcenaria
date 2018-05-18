@@ -21,7 +21,7 @@ public class EnderecoControle extends HttpServlet {
 
 	EnderecoDao dao = new EnderecoDaoImpl();
 
-	protected void doPost(HttpServletRequest req, HttpServletResponse response, Pessoa pessoa)
+	public void doPost(HttpServletRequest req, HttpServletResponse response, Pessoa pessoa)
 			throws ServletException, IOException {
 
 		// cadastrar endereco
@@ -52,7 +52,7 @@ public class EnderecoControle extends HttpServlet {
 	}
 
 	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		Pessoa pessoa = (Pessoa) req.getSession().getAttribute("pessoa");
 

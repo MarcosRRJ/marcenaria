@@ -23,7 +23,7 @@ public class TelefoneControle extends HttpServlet {
 	
 	TelefoneDao dao = new TelefoneDaoImpl();
 
-	protected void doPost(HttpServletRequest req, HttpServletResponse response, Pessoa pessoa)
+	public void doPost(HttpServletRequest req, HttpServletResponse response, Pessoa pessoa)
 			throws ServletException, IOException {
 
 		String tel = req.getParameter("tel");
@@ -55,7 +55,7 @@ public class TelefoneControle extends HttpServlet {
 	}
 
 	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+	public void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
 		
@@ -86,7 +86,7 @@ public class TelefoneControle extends HttpServlet {
 	}
 
 	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		String numero = req.getParameter("numero");
 		Telefone telefone = new Telefone();

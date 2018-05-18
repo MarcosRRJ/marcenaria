@@ -105,7 +105,7 @@ public class FuncionarioControle extends HttpServlet {
 			
 			ValidaForm validaForm = new ValidaFormImpl();
 			
-			if (validaForm.validaForm(req, resp)) {
+			if (validaForm.verificaErro(req, resp) != null) {
 				
 				req.setAttribute("errorString", "Todos os Campos são obrigatórios Campo Obrigatótio");
 				departamentoControlle.doGet(req, resp);

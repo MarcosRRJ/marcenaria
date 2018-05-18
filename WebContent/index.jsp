@@ -39,6 +39,15 @@
 				</tbody>	
 			</table>
 			
+			<form action="upload" method="post" enctype="multipart/form-data">
+				<input type="text" name="texto">
+				<input type="file" name="arquivo">
+				<input type="file" name="arquivo1">
+				<input type="file" name="arquivo2">
+				<input type="file" name="arquivo3">
+				<input type="submit" value="Upload">
+			</form>
+			
 		</div>
 	</body>
 </html>

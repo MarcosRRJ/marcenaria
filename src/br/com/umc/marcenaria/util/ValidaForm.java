@@ -5,6 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface ValidaForm {
 	
-	boolean validaForm(HttpServletRequest req, HttpServletResponse resp);
+	Erro verificaErro(HttpServletRequest req, HttpServletResponse resp);
 
 }

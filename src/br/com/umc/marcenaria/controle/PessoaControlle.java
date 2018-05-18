@@ -22,7 +22,7 @@ public class PessoaControlle extends HttpServlet {
 	private PessoaDao dao = new PessoaDaoImpl();
 	
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 	
 		
 		Pessoa pessoa = (Pessoa) req.getSession().getAttribute("pessoa");
@@ -36,7 +36,7 @@ public class PessoaControlle extends HttpServlet {
 		session.setAttribute("pessoa", pessoa);
 	}
 	
-	protected Integer doPosts(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public Integer doPosts(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
 		Date data = null;
@@ -58,7 +58,7 @@ public class PessoaControlle extends HttpServlet {
 		
 	}
 	
-	protected Pessoa doPut(HttpServletRequest req, HttpServletResponse resp, Pessoa pessoa) throws ServletException, IOException {
+	public Pessoa doPut(HttpServletRequest req, HttpServletResponse resp, Pessoa pessoa) throws ServletException, IOException {
 		
 		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
 		Date data = null;

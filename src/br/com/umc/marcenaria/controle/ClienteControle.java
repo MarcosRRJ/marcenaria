@@ -1,6 +1,7 @@
 package br.com.umc.marcenaria.controle;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,11 +13,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import br.com.umc.marcenaria.dao.ClienteDao;
 import br.com.umc.marcenaria.dao.impl.ClienteDaoImpl;
 import br.com.umc.marcenaria.modelo.Cliente;
 import br.com.umc.marcenaria.modelo.Perfil;
 import br.com.umc.marcenaria.modelo.Pessoa;
+import br.com.umc.marcenaria.util.ValidaForm;
+import br.com.umc.marcenaria.util.ValidaFormImpl;
 
 @WebServlet(urlPatterns = "/cliente")
 public class ClienteControle extends HttpServlet {
@@ -84,34 +91,51 @@ public class ClienteControle extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+		PrintWriter out = resp.getWriter();
+		Gson gson = new Gson();
+		JsonObject myObj = new JsonObject();
+
 		String acao = req.getParameter("acao");
 
 		if (acao == null) {
 
-			Pessoa pessoa = new Pessoa();
+			ValidaForm validaForm = new ValidaFormImpl();
 
-			pessoa.setId(pessoaControlle.doPosts(req, resp));
+			if (validaForm.verificaErro(req, resp).getErroDeTipo().size() > 0
+					|| validaForm.verificaErro(req, resp).getErroVazio().size() > 0) {
+				JsonElement objErro = gson.toJsonTree(validaForm.verificaErro(req, resp));
+				myObj.add("erro", objErro);
+				myObj.addProperty("success", false);
+				out.println(myObj.toString());
 
-			telefoneControle.doPost(req, resp, pessoa);
+			} else {
 
-			emailControle.doPost(req, resp, pessoa);
+				Pessoa pessoa = new Pessoa();
 
-			enderecoControle.doPost(req, resp, pessoa);
+				pessoa.setId(pessoaControlle.doPosts(req, resp));
 
-			documentoControle.doPost(req, resp, pessoa);
+				telefoneControle.doPost(req, resp, pessoa);
 
-			Perfil perfil = new Perfil();
-			perfil.setIdPerfil(1);
+				emailControle.doPost(req, resp, pessoa);
 
-			String senha = req.getParameter("senha");
-			String login = req.getParameter("email");
-			Cliente cliente = new Cliente(null, login, senha, null, null, pessoa.getId(), perfil);
+				enderecoControle.doPost(req, resp, pessoa);
 
-			pessoa.setCliente(dao.cadastrarCliente(cliente, perfil, pessoa));
+				documentoControle.doPost(req, resp, pessoa);
 
-			// encaminha o request para o JSP
-			RequestDispatcher rd = req.getRequestDispatcher("index.jsp");
-			rd.forward(req, resp);
+				Perfil perfil = new Perfil();
+				perfil.setIdPerfil(1);
+
+				String senha = req.getParameter("senha");
+				String login = req.getParameter("email");
+				Cliente cliente = new Cliente(null, login, senha, null, null, pessoa.getId(), perfil);
+
+				pessoa.setCliente(dao.cadastrarCliente(cliente, perfil, pessoa));
+
+				myObj.addProperty("success", true);
+				out.println(myObj.toString());
+
+				out.close();
+			}
 
 		}
 		if (acao != null && acao.equals("alterar")) {
